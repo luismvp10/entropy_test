@@ -3,8 +3,6 @@ package models
 import (
 	"errors"
 	"html"
-	"log"
-
 	//"log"
 	"strings"
 	"time"
