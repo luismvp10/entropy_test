@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/victorsteven/fullstack/api"
+	"github.com/luismvp10/entropy_test/api"
 )
 
 func main() {
