@@ -1,2 +1,11 @@
-# Go-JWT-Postgres-Mysql-Restful-API
-This is a application build with golang, jwt, gorm, postgresql, mysql
+Create database in mysql:
+
+create database entropy_db;
+
+
+Run Program in GO:
+
+go run main.go
+
+
+
