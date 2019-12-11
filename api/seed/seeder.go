@@ -1,10 +1,9 @@
 package seed
 
 import (
-	"log"
-
 	"github.com/jinzhu/gorm"
 	"github.com/luismvp10/entropy_test/api/models"
+	"log"
 )
 
 var users = []models.User{
@@ -21,17 +20,6 @@ var users = []models.User{
 		Foto:     "image2.png",
 		Email:    "juanol@gmail.com",
 		Password: "root",
-	},
-}
-
-var posts = []models.Post{
-	models.Post{
-		Title:   "Title 1",
-		Content: "Hello world 1",
-	},
-	models.Post{
-		Title:   "Title 2",
-		Content: "Hello world 2",
 	},
 }
 
@@ -53,13 +41,20 @@ var contacts = []models.Contact{
 	},
 }
 
+var groups = []models.Group{
+	models.Group{
+
+		Nombre: "UnoPrueba",
+	},
+}
+
 func Load(db *gorm.DB) {
 
-	err := db.Debug().DropTableIfExists(&models.Post{}, &models.User{}, &models.Contact{}).Error
+	err := db.Debug().DropTableIfExists(&models.User{}, &models.Contact{}, &models.GroupUser{}, &models.Group{}, &models.Message{}).Error
 	if err != nil {
 		log.Fatalf("cannot drop table: %v", err)
 	}
-	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Contact{}).Error
+	err = db.Debug().AutoMigrate(&models.User{}, &models.Contact{}, &models.GroupUser{}, &models.Group{}, &models.Message{}).Error
 	if err != nil {
 		log.Fatalf("cannot migrate table: %v", err)
 	}
@@ -69,7 +64,12 @@ func Load(db *gorm.DB) {
 		log.Fatalf("attaching foreign key error: %v", err)
 	}
 
-	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_id", "users(id)", "cascade", "cascade").Error
+	err = db.Debug().Model(&models.GroupUser{}).AddForeignKey("user_id", "users(id)", "cascade", "cascade").Error
+	if err != nil {
+		log.Fatalf("attaching foreign key error: %v", err)
+	}
+
+	err = db.Debug().Model(&models.GroupUser{}).AddForeignKey("group_id", "groups(id)", "cascade", "cascade").Error
 	if err != nil {
 		log.Fatalf("attaching foreign key error: %v", err)
 	}
@@ -78,12 +78,6 @@ func Load(db *gorm.DB) {
 		err = db.Debug().Model(&models.User{}).Create(&users[i]).Error
 		if err != nil {
 			log.Fatalf("cannot seed users table: %v", err)
-		}
-		posts[i].AuthorID = users[i].ID
-
-		err = db.Debug().Model(&models.Post{}).Create(&posts[i]).Error
-		if err != nil {
-			log.Fatalf("cannot seed posts table: %v", err)
 		}
 
 		contacts[i].UserID = users[i].ID

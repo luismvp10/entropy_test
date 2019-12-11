@@ -55,6 +55,14 @@ func (u *User) Validate(action string) error {
 		if u.Nombre == "" {
 			return errors.New("Required Name")
 		}
+
+		if u.Edad < 1 {
+			return errors.New("Required valid age")
+		}
+
+		if u.Foto == "" {
+			return errors.New("Required Profile photo")
+		}
 		if u.Password == "" {
 			return errors.New("Required Password")
 		}
@@ -155,6 +163,8 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 		map[string]interface{}{
 			"password":  u.Password,
 			"nombre":    u.Nombre,
+			"edad":      u.Edad,
+			"foto":      u.Foto,
 			"email":     u.Email,
 			"update_at": time.Now(),
 		},
@@ -170,12 +180,12 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	return u, nil
 }
 
-func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
-
-	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).Delete(&User{})
-
-	if db.Error != nil {
-		return 0, db.Error
-	}
-	return db.RowsAffected, nil
-}
+//func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
+//
+//	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).Delete(&User{})
+//
+//	if db.Error != nil {
+//		return 0, db.Error
+//	}
+//	return db.RowsAffected, nil
+//}
