@@ -18,6 +18,7 @@ func (s *Server) initializeRoutes() {
 	//s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUser)).Methods("DELETE")
 
 	///Contacts routes
+	//	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUser)).Methods("DELETE")
 	s.Router.HandleFunc("/contacts", middlewares.SetMiddlewareAuthentication(s.CreateContact)).Methods("POST")
 	s.Router.HandleFunc("/contacts/{id}", middlewares.SetMiddlewareAuthentication(s.GetContacts)).Methods("GET")
 	s.Router.HandleFunc("/contact/{id}", middlewares.SetMiddlewareAuthentication(s.GetContact)).Methods("GET")
@@ -25,5 +26,6 @@ func (s *Server) initializeRoutes() {
 	///Messages routes
 	s.Router.HandleFunc("/message", middlewares.SetMiddlewareAuthentication(s.sendMessage)).Methods("POST")
 	s.Router.HandleFunc("/message/{id}", middlewares.SetMiddlewareAuthentication(s.showMessages)).Methods("GET")
+	s.Router.HandleFunc("/message/{id}", middlewares.SetMiddlewareAuthentication(s.deleteMessage)).Methods("DELETE")
 	s.Router.HandleFunc("/messages/{id}", middlewares.SetMiddlewareAuthentication(s.showConversations)).Methods("GET")
 }

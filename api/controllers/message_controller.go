@@ -83,3 +83,43 @@ func (server *Server) showConversations(w http.ResponseWriter, r *http.Request) 
 	}
 	responses.JSON(w, http.StatusOK, conversationsReceived)
 }
+
+func (server *Server) deleteMessage(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+
+	// Is a valid message id given to us?
+	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// Is this user authenticated?
+	uid, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+
+	// Check if the message exist
+	message := models.Message{}
+	err = server.DB.Debug().Model(models.Message{}).Where("id = ?", pid).Take(&message).Error
+	if err != nil {
+		responses.ERROR(w, http.StatusNotFound, errors.New("Unauthorized"))
+		return
+	}
+
+	// Is the authenticated user, the owner of this message?
+	if uid != message.UserFromID {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+	_, err = message.DeleteMessage(server.DB, pid, uid)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	w.Header().Set("Entity", fmt.Sprintf("%d", pid))
+	responses.JSON(w, http.StatusNoContent, "")
+}

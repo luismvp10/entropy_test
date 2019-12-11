@@ -97,3 +97,15 @@ func (m *Message) FindConversations(db *gorm.DB, pid uint64) (*[]Message, error)
 
 	return &messages, nil
 }
+
+func (m *Message) DeleteMessage(db *gorm.DB, pid uint64, uid uint32) (int64, error) {
+	db = db.Debug().Model(&Message{}).Where("id = ? and user_from_id = ?", pid, uid).Take(&Message{}).Delete(&Message{})
+
+	if db.Error != nil {
+		if gorm.IsRecordNotFoundError(db.Error) {
+			return 0, errors.New("Message not found")
+		}
+		return 0, db.Error
+	}
+	return db.RowsAffected, nil
+}
