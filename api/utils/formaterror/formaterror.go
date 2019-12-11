@@ -25,5 +25,9 @@ func FormatError(err string) error {
 	if strings.Contains(err, "user") {
 		return errors.New("User Already Exists")
 	}
+
+	if strings.Contains(err, "message") {
+		return errors.New("Empty Message")
+	}
 	return errors.New("Incorrect Details")
 }

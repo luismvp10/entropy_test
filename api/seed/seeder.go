@@ -41,13 +41,6 @@ var contacts = []models.Contact{
 	},
 }
 
-var groups = []models.Group{
-	models.Group{
-
-		Nombre: "UnoPrueba",
-	},
-}
-
 func Load(db *gorm.DB) {
 
 	err := db.Debug().DropTableIfExists(&models.User{}, &models.Contact{}, &models.GroupUser{}, &models.Group{}, &models.Message{}).Error

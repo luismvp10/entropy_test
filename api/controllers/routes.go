@@ -21,4 +21,9 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/contacts", middlewares.SetMiddlewareAuthentication(s.CreateContact)).Methods("POST")
 	s.Router.HandleFunc("/contacts/{id}", middlewares.SetMiddlewareAuthentication(s.GetContacts)).Methods("GET")
 	s.Router.HandleFunc("/contact/{id}", middlewares.SetMiddlewareAuthentication(s.GetContact)).Methods("GET")
+
+	///Messages routes
+	s.Router.HandleFunc("/message", middlewares.SetMiddlewareAuthentication(s.sendMessage)).Methods("POST")
+	s.Router.HandleFunc("/message/{id}", middlewares.SetMiddlewareAuthentication(s.showMessages)).Methods("GET")
+	s.Router.HandleFunc("/messages", middlewares.SetMiddlewareAuthentication(s.showConversations)).Methods("GET")
 }
