@@ -74,24 +74,6 @@ func (c *Contact) SaveContact(db *gorm.DB) (*Contact, error) {
 	return c, nil
 }
 
-//func (c *Contact) FindAllContacts(db *gorm.DB) (*[]Contact, error) {
-//	var err error
-//	contacts := []Contact{}
-//	err = db.Debug().Model(&Contact{}).Limit(100).Find(&contacts).Error
-//	if err != nil {
-//		return &[]Contact{}, err
-//	}
-//	if len(contacts) > 0 {
-//		for i, _ := range contacts {
-//			err := db.Debug().Model(&User{}).Where("id = ?", contacts[i].UserID).Take(&contacts[i].Email).Error
-//			if err != nil {
-//				return &[]Contact{}, err
-//			}
-//		}
-//	}
-//	return &contacts, nil
-//}
-
 func (c *Contact) FindContactByUserId(db *gorm.DB, pid uint64) (*[]Contact, error) {
 	var err error
 	contacts := []Contact{}
@@ -111,4 +93,19 @@ func (c *Contact) FindContactByUserId(db *gorm.DB, pid uint64) (*[]Contact, erro
 	}
 
 	return &contacts, nil
+}
+
+func (c *Contact) FindContact(db *gorm.DB, pid uint64) (*Contact, error) {
+	var err error
+	err = db.Debug().Model(&Contact{}).Where("id = ?", pid).Take(&c).Error
+	if err != nil {
+		return &Contact{}, err
+	}
+	if c.ID != 0 {
+		err = db.Debug().Model(&User{}).Where("id = ?", c.UserID).Take(&c.User).Error
+		if err != nil {
+			return &Contact{}, err
+		}
+	}
+	return c, nil
 }

@@ -21,5 +21,9 @@ func FormatError(err string) error {
 	if strings.Contains(err, "hashedPassword") {
 		return errors.New("Incorrect Password")
 	}
+
+	if strings.Contains(err, "user") {
+		return errors.New("User Already Exists")
+	}
 	return errors.New("Incorrect Details")
 }

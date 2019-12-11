@@ -3,7 +3,7 @@ package models
 import (
 	"errors"
 	"html"
-	//"log"
+	"log"
 	"strings"
 	"time"
 
@@ -107,10 +107,18 @@ func (u *User) Validate(action string) error {
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 
 	var err error
-	err = db.Debug().Create(&u).Error
-	if err != nil {
-		return &User{}, err
+
+	check := db.Debug().Model(&User{}).Where("email = ?", u.Email).Take(&u).RowsAffected
+
+	if check > 0 {
+		return &User{}, errors.New("user already exists")
+	} else if check == 0 {
+		err = db.Debug().Create(&u).Error
+		if err != nil {
+			return &User{}, err
+		}
 	}
+
 	return u, nil
 }
 

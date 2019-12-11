@@ -69,3 +69,21 @@ func (server *Server) GetContacts(w http.ResponseWriter, r *http.Request) {
 	}
 	responses.JSON(w, http.StatusOK, contactReceived)
 }
+
+func (server *Server) GetContact(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	contacts := models.Contact{}
+
+	contactReceived, err := contacts.FindContact(server.DB, pid)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, contactReceived)
+}
