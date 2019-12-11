@@ -23,4 +23,8 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/posts/{id}", middlewares.SetMiddlewareJSON(s.GetPost)).Methods("GET")
 	s.Router.HandleFunc("/posts/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdatePost))).Methods("PUT")
 	s.Router.HandleFunc("/posts/{id}", middlewares.SetMiddlewareAuthentication(s.DeletePost)).Methods("DELETE")
+
+	///Contacts routes
+	s.Router.HandleFunc("/contacts", middlewares.SetMiddlewareAuthentication(s.CreateContact)).Methods("POST")
+	s.Router.HandleFunc("/contacts/{id}", middlewares.SetMiddlewareAuthentication(s.GetContacts)).Methods("GET")
 }

@@ -1,9 +1,11 @@
 package main
 
 import (
-     "github.com/luismvp10/entropy_test/api"
+	"github.com/luismvp10/entropy_test/api"
 )
 
-func main()  {
+func main() {
+
 	api.Run()
+
 }

@@ -4,19 +4,23 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
-	"github.com/victorsteven/fullstack/api/models"
+	"github.com/luismvp10/entropy_test/api/models"
 )
 
 var users = []models.User{
 	models.User{
-		Nickname: "Steven victor",
-		Email:    "steven@gmail.com",
-		Password: "password",
+		Nombre:   "Luis Valencia",
+		Edad:     20,
+		Foto:     "image1.png",
+		Email:    "luismvalenp@gmail.com",
+		Password: "12345",
 	},
 	models.User{
-		Nickname: "Martin Luther",
-		Email:    "luther@gmail.com",
-		Password: "password",
+		Nombre:   "Juan Olivares",
+		Edad:     21,
+		Foto:     "image2.png",
+		Email:    "juanol@gmail.com",
+		Password: "root",
 	},
 }
 
@@ -31,15 +35,38 @@ var posts = []models.Post{
 	},
 }
 
+var contacts = []models.Contact{
+	models.Contact{
+		Nombre:    "Juan",
+		Apodo:     "Juancho",
+		Email:     "juanol@gmail.com",
+		NumeroTel: "5540368914",
+		Direccion: "Manzana 85",
+	},
+
+	models.Contact{
+		Nombre:    "Juan",
+		Apodo:     "Juancho",
+		Email:     "juanol@gmail.com",
+		NumeroTel: "5540368914",
+		Direccion: "Manzana 86",
+	},
+}
+
 func Load(db *gorm.DB) {
 
-	err := db.Debug().DropTableIfExists(&models.Post{}, &models.User{}).Error
+	err := db.Debug().DropTableIfExists(&models.Post{}, &models.User{}, &models.Contact{}).Error
 	if err != nil {
 		log.Fatalf("cannot drop table: %v", err)
 	}
-	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}).Error
+	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Contact{}).Error
 	if err != nil {
 		log.Fatalf("cannot migrate table: %v", err)
+	}
+
+	err = db.Debug().Model(&models.Contact{}).AddForeignKey("user_id", "users(id)", "cascade", "cascade").Error
+	if err != nil {
+		log.Fatalf("attaching foreign key error: %v", err)
 	}
 
 	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_id", "users(id)", "cascade", "cascade").Error
@@ -58,5 +85,12 @@ func Load(db *gorm.DB) {
 		if err != nil {
 			log.Fatalf("cannot seed posts table: %v", err)
 		}
+
+		contacts[i].UserID = users[i].ID
+		err = db.Debug().Model(&models.Contact{}).Create(&contacts[i]).Error
+		if err != nil {
+			log.Fatalf("cannot seed posts table: %v", err)
+		}
+
 	}
 }

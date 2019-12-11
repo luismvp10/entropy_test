@@ -8,7 +8,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 
-	_ "github.com/jinzhu/gorm/dialects/mysql" //mysql database driver
+	_ "github.com/jinzhu/gorm/dialects/mysql"    //mysql database driver
+	_ "github.com/jinzhu/gorm/dialects/postgres" //postgres database driver
 
 	"github.com/luismvp10/entropy_test/api/models"
 )
@@ -51,6 +52,6 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 }
 
 func (server *Server) Run(addr string) {
-	fmt.Println("Listening to port 8080")
+	fmt.Println("Listening to port 8085")
 	log.Fatal(http.ListenAndServe(addr, server.Router))
 }
