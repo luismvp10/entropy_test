@@ -78,5 +78,22 @@ func (m *Message) FindMessagesByUserId(db *gorm.DB, pid uint64) (*[]Message, err
 }
 
 func (m *Message) FindConversations(db *gorm.DB, pid uint64) (*[]Message, error) {
+	var err error
+	messages := []Message{}
 
+	err = db.Debug().Model(&Message{}).Where("usert_to_id = ?", pid).Find(&messages).Limit(100).Error
+	if err != nil {
+		return &[]Message{}, err
+	}
+
+	//if len(messages) > 0 {
+	//	for i, _ := range messages {
+	//		err := db.Debug().Model(&User{}).Where("id = ?", messages[i].UsertToID).Take(&messages[i].User).Error
+	//		if err != nil {
+	//			return &[]Message{}, err
+	//		}
+	//	}
+	//}
+
+	return &messages, nil
 }
