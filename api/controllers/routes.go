@@ -25,5 +25,5 @@ func (s *Server) initializeRoutes() {
 	///Messages routes
 	s.Router.HandleFunc("/message", middlewares.SetMiddlewareAuthentication(s.sendMessage)).Methods("POST")
 	s.Router.HandleFunc("/message/{id}", middlewares.SetMiddlewareAuthentication(s.showMessages)).Methods("GET")
-	s.Router.HandleFunc("/messages", middlewares.SetMiddlewareAuthentication(s.showConversations)).Methods("GET")
+	s.Router.HandleFunc("/messages/{id}", middlewares.SetMiddlewareAuthentication(s.showConversations)).Methods("GET")
 }

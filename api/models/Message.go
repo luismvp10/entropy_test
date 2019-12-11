@@ -81,7 +81,7 @@ func (m *Message) FindConversations(db *gorm.DB, pid uint64) (*[]Message, error)
 	var err error
 	messages := []Message{}
 
-	err = db.Debug().Model(&Message{}).Where("usert_to_id = ?", pid).Find(&messages).Limit(100).Error
+	err = db.Debug().Model(&Message{}).Select("distinct(usert_to_id)").Where("user_from_id = ?", pid).Find(&messages).Limit(100).Error
 	if err != nil {
 		return &[]Message{}, err
 	}
